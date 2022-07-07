@@ -1,9 +1,14 @@
 import React from "react";
-import { useDispatch } from "react-redux";
-import { createTask } from "../taskSlice";
+import TextField from "@material-ui/core/TextField";
 import { useForm } from "react-hook-form";
 import styles from "./TaskForm.module.scss";
-import TextField from "@material-ui/core/TextField";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createTask,
+  editTask,
+  handleModalOpen,
+  selectSelectedTask,
+} from "../taskSlice";
 
 type Inputs = {
   taskTitle?: string;
@@ -15,6 +20,7 @@ type PropTypes = {
 
 const TaskForm: React.FC<PropTypes> = ({ edit }) => {
   const dispatch = useDispatch();
+  const selectedTask = useSelector(selectSelectedTask);
   const { register, handleSubmit, reset } = useForm();
 
   const handleCreate = (data: Inputs) => {
@@ -22,7 +28,9 @@ const TaskForm: React.FC<PropTypes> = ({ edit }) => {
     reset();
   };
   const handleEdit = (data: Inputs) => {
-    console.log(data);
+    const sendData = { ...selectedTask, title: data.taskTitle };
+    dispatch(editTask(sendData));
+    dispatch(handleModalOpen(false));
   };
   return (
     <div className={styles.root}>
@@ -35,7 +43,7 @@ const TaskForm: React.FC<PropTypes> = ({ edit }) => {
         <TextField
           id="outlined-basic"
           label={edit ? "Edit Task" : "New Task"}
-          defaultValue={edit ? "defaultValue" : ""}
+          defaultValue={edit ? selectedTask.title : ""}
           variant="outlined"
           {...register("taskTitle")}
           className={styles.textField}
@@ -45,7 +53,11 @@ const TaskForm: React.FC<PropTypes> = ({ edit }) => {
             <button type="submit" className={styles.submitButton}>
               Submit
             </button>
-            <button type="button" className={styles.cancelButton}>
+            <button
+              type="button"
+              onClick={() => dispatch(handleModalOpen(false))}
+              className={styles.cancelButton}
+            >
               Cancel
             </button>
           </div>
