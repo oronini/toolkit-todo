@@ -1,6 +1,5 @@
-import { Satellite } from "@material-ui/icons";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState, AppThunk } from "../../app/store";
+import { createSlice } from "@reduxjs/toolkit";
+import { RootState } from "../../app/store";
 
 export interface TaskState {
   // taskが何個あるのかを管理する
